@@ -1,7 +1,6 @@
 package ui;
 
 import simulation.Environment;
-import entity.Entity;
 import entity.Boid;
 import entity.Shark;
 
@@ -52,16 +51,11 @@ public class SimulationPanel extends JPanel implements ActionListener {
         
         Graphics2D g2d = (Graphics2D) g;
 
-        for (Entity entity : environment.getEntities()) {
-            
-            // Cấu trúc kiểm tra đa hình: Nếu nó là cá Boid thì dùng BoidRenderer
-            if (entity instanceof Boid) {
-                boidRenderer.render(g2d, (Boid) entity);
-            } else if (entity instanceof Shark) {
-                sharkRenderer.render(g2d, (Shark) entity, environment.getSharkConfig());
-            }
-            // Sau này nếu có Đá (Obstacle) hay Cá Mập (Predator), 
-            //chỉ cần thêm lệnh else if (entity instanceof Predator) ở đây.
+        for (Boid boid : environment.getBoids()) {
+            boidRenderer.render(g2d, boid);
+        }
+        for (Shark shark : environment.getSharks()) {
+            sharkRenderer.render(g2d, shark, environment.getSharkConfig());
         }
     }
 }

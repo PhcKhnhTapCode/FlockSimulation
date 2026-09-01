@@ -5,26 +5,46 @@ import java.util.ArrayList;
 import core.*;
 
 public class Shark extends DynamicEntity {
+
+    private boolean preyDetected = false;
+
     public Shark(double x, double y) {
         super(x, y);
         this.maxForce = 0.15;
         this.maxSpeed = 3.0;
     }
 
-    public Entity findNearestBoid(ArrayList<Entity> entities) {
-        Entity nearest = null;
-        double best = Double.MAX_VALUE;
+    public boolean isPreyDetected() { return preyDetected; }
 
-        for (Entity e : entities) {
-            if (e instanceof Boid) {
-                double d = calc.distance(this.getPosition(), e.getPosition());
-                if (d < best) {
-                    best = d;
-                    nearest = e;
-                }
+    private Boid findPreyInView(ArrayList<Boid> boids, SharkConfig config) {
+        double heading = Math.atan2(this.velocity.getY(), this.velocity.getX());
+        double halfView = config.viewAngle() / 2;
+        double radiusSq = config.detectRadius() * config.detectRadius();
+
+        Boid nearest = null;
+        double bestSq = Double.MAX_VALUE;
+
+        for (Boid b : boids) {
+            double dSq = calc.distanceSq(this.position, b.getPosition());
+            if (dSq > radiusSq) continue;
+
+            vector diffVec = calc.dif(b.getPosition(), this.position);
+            double angleToBoid = Math.atan2(diffVec.getY(), diffVec.getX());
+            double angleDiff = normalizeAngle(angleToBoid - heading);
+            if (Math.abs(angleDiff) > halfView) continue;
+
+            if (dSq < bestSq) {
+                bestSq = dSq;
+                nearest = b;
             }
         }
         return nearest;
+    }
+
+    private double normalizeAngle(double angle) {
+        while (angle > Math.PI) angle -= 2 * Math.PI;
+        while (angle < -Math.PI) angle += 2 * Math.PI;
+        return angle;
     }
 
     @Override
@@ -35,16 +55,19 @@ public class Shark extends DynamicEntity {
 
         this.applyForce(this.avoidBorder(env.getWorldConfig()));
 
-        Entity target = findNearestBoid(env.getEntities());
-        if (target != null) {
-            double d = calc.distance(this.getPosition(), target.getPosition());
+        ArrayList<Boid> boids = env.getBoids();
+        double eatRadiusSq = config.eatRadius() * config.eatRadius();
 
-            if (d <= config.detectRadius()) {
-                this.applyForce(this.seek(target.getPosition()));
+        for (Boid b : boids) {
+            if (calc.distanceSq(this.position, b.getPosition()) <= eatRadiusSq) {
+                env.markForRemoval(b);
             }
-            if (d <= config.eatRadius()) {
-                env.markForRemoval(target);
-            }
+        }
+
+        Boid target = findPreyInView(boids, config);
+        this.preyDetected = (target != null);
+        if (target != null) {
+            this.applyForce(this.seek(target.getPosition()));
         }
 
         this.move();

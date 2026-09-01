@@ -52,17 +52,18 @@ public class Main {
         JButton addBtn = createAccentButton("+ Add Boid");
         addBtn.addActionListener(e -> {
             boids.addBoid();
-            env.getEntities().add(new entity.Boid(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
+            env.getBoids().add(new entity.Boid(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
         });
 
         // Create sliders and button for the Shark predator
         JSlider sharkSizeSlider = createSlider("Shark Size", 40, 200, 100, sharks);
         JSlider sharkSpeedSlider = createSlider("Shark Speed", 0, 80, 30, sharks);
+        JSlider sharkVisionSlider = createSlider("Shark Vision", 500, 5000, 2500, sharks);
 
         JButton addSharkBtn = createAccentButton("+ Add Shark");
         addSharkBtn.addActionListener(e -> {
             sharks.addShark();
-            env.getEntities().add(new entity.Shark(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
+            env.getSharks().add(new entity.Shark(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
         });
 
         // Add to ControlPanel
@@ -72,6 +73,7 @@ public class Main {
         controlPanel.add(addBtn);
         controlPanel.add(sharkSizeSlider);
         controlPanel.add(sharkSpeedSlider);
+        controlPanel.add(sharkVisionSlider);
         controlPanel.add(addSharkBtn);
 
         // 5. Add to Frame
@@ -157,6 +159,7 @@ public class Main {
 
                 if (name.equals("Shark Size")) config.setSize(val);
                 else if (name.equals("Shark Speed")) config.setSpeed(val);
+                else if (name.equals("Shark Vision")) config.setDetectRadius(val);
             }
         });
         return slider;

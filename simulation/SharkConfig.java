@@ -7,10 +7,11 @@ public class SharkConfig {
     private double maxForce = 0.15;
     private double detectRadius = 250;
     private double eatRadius = 12;
+    private double viewAngle = Math.toRadians(90);
 
     public SharkConfig () {}
 
-    public int numberShark() {return number;}    
+    public int numberShark() {return number;}
     public void addShark() {number += 1;}
 
     public double size() { return size; }
@@ -21,5 +22,7 @@ public class SharkConfig {
 
     public double maxForce() { return maxForce; }
     public double detectRadius() { return detectRadius; }
+    public void setDetectRadius(double value) { detectRadius = value; }
     public double eatRadius() { return eatRadius; }
+    public double viewAngle() { return viewAngle; }
 }

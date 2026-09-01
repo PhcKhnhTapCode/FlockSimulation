@@ -14,4 +14,9 @@ public class calc {
         double dy = a.getY() - b.getY();
         return Math.sqrt(dx * dx + dy * dy);
     }
+    public static double distanceSq(vector a, vector b) {
+        double dx = a.getX() - b.getX();
+        double dy = a.getY() - b.getY();
+        return dx * dx + dy * dy;
+    }
 }
