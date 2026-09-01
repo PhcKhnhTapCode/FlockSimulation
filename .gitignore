@@ -1,2 +1,6 @@
-# skip .class file
+out/
+bin/
 *.class
+.project
+.classpath
+.settings/
