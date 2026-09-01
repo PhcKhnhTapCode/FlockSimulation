@@ -7,7 +7,7 @@ public class BoidConfig {
     // Separation, Agliment, Cohension
     private double[] radius = {30, 40, 50}; 
     private double[] weight = {0.0, 0.0, 0.0};  
-    private int number = 30;
+    private int number = 100;
     public BoidConfig () {}
 
     public int numberBoid() {return number;}    

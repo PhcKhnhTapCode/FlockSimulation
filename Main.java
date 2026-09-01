@@ -14,7 +14,7 @@ public class Main {
         Environment env = new Environment(world, boids);
 
         //Initialize the Frame.
-        JFrame frame = new JFrame("OOP Boids Flocking Simulation");
+        JFrame frame = new JFrame("OOP Flocking Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
