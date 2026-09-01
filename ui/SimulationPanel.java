@@ -3,6 +3,7 @@ package ui;
 import simulation.Environment;
 import entity.Entity;
 import entity.Boid;
+import entity.Shark;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -18,10 +19,12 @@ public class SimulationPanel extends JPanel implements ActionListener {
     private Environment environment;
     private Timer timer;
     private BoidRenderer boidRenderer;
+    private SharkRenderer sharkRenderer;
 
     public SimulationPanel(Environment env) {
         this.environment = env;
         this.boidRenderer = new BoidRenderer();
+        this.sharkRenderer = new SharkRenderer();
 
         int width = env.getWorldConfig().getWidth();
         int height = env.getWorldConfig().getHeight();
@@ -54,6 +57,8 @@ public class SimulationPanel extends JPanel implements ActionListener {
             // Cấu trúc kiểm tra đa hình: Nếu nó là cá Boid thì dùng BoidRenderer
             if (entity instanceof Boid) {
                 boidRenderer.render(g2d, (Boid) entity);
+            } else if (entity instanceof Shark) {
+                sharkRenderer.render(g2d, (Shark) entity, environment.getSharkConfig());
             }
             // Sau này nếu có Đá (Obstacle) hay Cá Mập (Predator), 
             //chỉ cần thêm lệnh else if (entity instanceof Predator) ở đây.

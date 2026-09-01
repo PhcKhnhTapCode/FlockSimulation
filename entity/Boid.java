@@ -41,6 +41,35 @@ public class Boid extends DynamicEntity {
         steer.mul(config.sepWeight());
         return steer; 
     }
+
+    public vector flee(ArrayList<Entity> entities, BoidConfig config) {
+        vector steer = new vector(0, 0);
+        int cnt = 0;
+        for (Entity e: entities) {
+            if (e instanceof Shark other) {
+                double d = calc.distance(this.getPosition(), other.getPosition());
+                if (d > config.fleeRadius()) continue;
+                
+                vector diff = calc.dif(this.getPosition(), other.getPosition());
+                diff.normalize(); if (d > 0) diff.div(d);
+                
+                steer.add(diff);
+                ++cnt;
+            }
+        }
+
+        if (cnt > 0) {
+            steer.div((double) cnt);
+            steer.normalize();
+            steer.mul(this.maxSpeed);
+            steer.sub(this.velocity);
+            steer.limit(this.maxForce);
+        }
+        
+        steer.mul(config.fleeWeight());
+        return steer; 
+    }
+
     public vector alignment(ArrayList<Entity> entities, BoidConfig config) {
         vector steer = new vector(0, 0);
         int cnt = 0;
@@ -106,6 +135,7 @@ public class Boid extends DynamicEntity {
         this.applyForce(separation(env.getEntities(), env.getBoidConfig()));
         this.applyForce(alignment(env.getEntities(), env.getBoidConfig()));
         this.applyForce(cohesion(env.getEntities(), env.getBoidConfig()));
+        this.applyForce(flee(env.getEntities(), env.getBoidConfig()));
         this.move();
     }
 }

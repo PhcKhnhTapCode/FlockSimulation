@@ -22,7 +22,8 @@ public class Main {
         //Initialize Config & Environment
         WorldConfig world = new WorldConfig(800, 600, 50, true);
         BoidConfig boids = new BoidConfig();
-        Environment env = new Environment(world, boids);
+        SharkConfig sharks = new SharkConfig();
+        Environment env = new Environment(world, boids, sharks);
 
         //Initialize the Frame.
         JFrame frame = new JFrame("OOP Boids Flocking Simulation");
@@ -35,7 +36,7 @@ public class Main {
 
         //Initialize the Control Panel
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(1, 4, 24, 0));
+        controlPanel.setLayout(new GridLayout(2, 4, 20, 8));
         controlPanel.setBackground(BG_PANEL);
         controlPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(50, 50, 55)),
@@ -54,11 +55,24 @@ public class Main {
             env.getEntities().add(new entity.Boid(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
         });
 
+        // Create sliders and button for the Shark predator
+        JSlider sharkSizeSlider = createSlider("Shark Size", 40, 200, 100, sharks);
+        JSlider sharkSpeedSlider = createSlider("Shark Speed", 0, 80, 30, sharks);
+
+        JButton addSharkBtn = createAccentButton("+ Add Shark");
+        addSharkBtn.addActionListener(e -> {
+            sharks.addShark();
+            env.getEntities().add(new entity.Shark(Math.random() * world.getWidth(), Math.random() * world.getHeight()));
+        });
+
         // Add to ControlPanel
         controlPanel.add(sepSlider);
         controlPanel.add(aliSlider);
         controlPanel.add(cohSlider);
         controlPanel.add(addBtn);
+        controlPanel.add(sharkSizeSlider);
+        controlPanel.add(sharkSpeedSlider);
+        controlPanel.add(addSharkBtn);
 
         // 5. Add to Frame
         frame.add(simPanel, BorderLayout.CENTER);
@@ -123,6 +137,26 @@ public class Main {
                 if (name.equals("Separation")) config.setSepWeight(val);
                 else if (name.equals("Alignment")) config.setAliWeight(val);
                 else if (name.equals("Cohesion")) config.setCohWeight(val);
+            }
+        });
+        return slider;
+    }
+
+    // Hàm createSlider dành riêng cho các thông số của Shark (kích thước, tốc độ)
+    private static JSlider createSlider(String name, int min, int max, int init, SharkConfig config) {
+        JSlider slider = new JSlider(min, max, init);
+        slider.setOpaque(false);
+        slider.setUI(new FlatSliderUI(slider));
+        slider.setBorder(titledSliderBorder(name, init / 10.0));
+
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                double val = slider.getValue() / 10.0;
+                slider.setBorder(titledSliderBorder(name, val));
+
+                if (name.equals("Shark Size")) config.setSize(val);
+                else if (name.equals("Shark Speed")) config.setSpeed(val);
             }
         });
         return slider;

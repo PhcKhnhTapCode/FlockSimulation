@@ -27,6 +27,15 @@ public abstract class DynamicEntity extends Entity {
         position.add(velocity);
     } 
 
+    protected vector seek(vector target) {
+        vector steer = calc.dif(target, this.position);
+        steer.normalize();
+        steer.mul(maxSpeed);
+        steer.sub(this.velocity);
+        steer.limit(maxForce);
+        return steer;
+    }
+
     public vector avoidBorder(WorldConfig config) {
         vector steer = new vector(0, 0);
         if (!config.isAvoidBorder()) return steer;
