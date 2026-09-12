@@ -9,6 +9,7 @@ public class Boid extends DynamicEntity {
         super(x, y);
         this.maxForce = 0.2;
         this.maxSpeed = 4.0;
+        this.cruiseSpeed = 2.5;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class Boid extends DynamicEntity {
                 ++cohCount;
             }
         }
-
+        
         for (Shark other : env.getSharks()) {
             double dSq = calc.distanceSq(this.position, other.getPosition());
 
@@ -69,6 +70,19 @@ public class Boid extends DynamicEntity {
                 diff.normalize(); if (d > 0) diff.div(d);
                 fleeSum.add(diff);
                 ++fleeCount;
+            }
+        }
+
+        // Make sure the boids have same speed 
+        if (this.velocity.magnitude() < this.cruiseSpeed) {
+            double currentSpeed = this.velocity.magnitude();
+            vector steer = this.velocity.copy();
+            if (currentSpeed > 0) {
+                steer.normalize();
+                steer.mul(this.cruiseSpeed - currentSpeed);
+                steer.mul(0.85); // magic number
+                steer.limit(this.maxForce);
+                this.applyForce(steer);
             }
         }
 

@@ -6,6 +6,7 @@ public abstract class DynamicEntity extends Entity {
     protected vector velocity, acceleration;
     protected double maxForce;
     protected double maxSpeed;
+    protected double cruiseSpeed;
 
     public DynamicEntity(double x, double y) {
         super(x, y);
