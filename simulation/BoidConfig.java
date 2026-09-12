@@ -4,7 +4,7 @@ package simulation;
 
 public class BoidConfig {
     
-    // Separation, Agliment, Cohension
+    // Separation, Agliment, Cohension, Flee
 
     private double[] radius = {30, 40, 50, 80}; 
     private double[] weight = {0.0, 0.0, 0.0, 1.5};  
@@ -15,23 +15,19 @@ public class BoidConfig {
     public void addBoid() {number += 1;}
 
     public double sepRadius() {return radius[0];}
-    public double aliRadius() {return radius[1];}
-    public double cohRadius() {return radius[2];}
-
     public double sepWeight() {return weight[0];}
-    public double aliWeight() {return weight[1];}
-    public double cohWeight() {return weight[2];}
-    
     public void setSepWeight (double value) {weight[0] = value;}
+
+    public double aliRadius() {return radius[1];}
+    public double aliWeight() {return weight[1];}
     public void setAliWeight (double value) {weight[1] = value;}
+    
+    public double cohRadius() {return radius[2];}
+    public double cohWeight() {return weight[2];}
     public void setCohWeight (double value) {weight[2] = value;}
 
     public double fleeRadius() {return radius[3];}
     public double fleeWeight() {return weight[3];}
     public void setFleeWeight (double value) {weight[3] = value;}
 
-    // public static void main(String[] args) {
-    //     BoidConfig tmp = new BoidConfig();
-    //     System.out.println(tmp.number);
-    // }
 }
